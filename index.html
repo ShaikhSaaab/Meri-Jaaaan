@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shehnaz ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#ffe6f0,#fff0f5,#ffe6cc);
+font-family:'Poppins',sans-serif;
+overflow:hidden;
+text-align:center;
+}
+
+.container{
+position:relative;
+z-index:2;
+padding:20px;
+}
+
+h1{
+font-family:'Dancing Script',cursive;
+font-size:42px;
+color:#b30059;
+min-height:70px;
+}
+
+img{
+width:230px;
+margin:20px 0;
+transition:0.4s;
+}
+
+button{
+padding:12px 25px;
+margin:10px;
+border:none;
+border-radius:30px;
+font-size:18px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.yes{
+background:#00cc66;
+color:white;
+}
+
+.no{
+background:#ff1a1a;
+color:white;
+position:relative;
+}
+
+button:hover{
+transform:scale(1.1);
+}
+
+/* Falling Hearts */
+.heart{
+position:absolute;
+color:red;
+font-size:20px;
+animation:fall 5s linear infinite;
+}
+
+@keyframes fall{
+0%{transform:translateY(-10vh);opacity:1;}
+100%{transform:translateY(110vh);opacity:0;}
+}
+
+/* Fireworks Overlay */
+.fireworks{
+position:fixed;
+width:100%;
+height:100%;
+background:url('https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif') center/cover no-repeat;
+display:none;
+z-index:1;
+}
+
+/* Ring Popup */
+.ring-popup{
+display:none;
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 0 30px gold;
+z-index:10;
+animation:pop 0.6s ease;
+}
+
+@keyframes pop{
+0%{transform:translate(-50%,-50%) scale(0);}
+100%{transform:translate(-50%,-50%) scale(1);}
+}
+
+.ring-popup h2{
+font-family:'Dancing Script',cursive;
+color:#cc0066;
+}
+</style>
+</head>
+
+<body>
+
+<div class="fireworks" id="fireworks"></div>
+
+<div class="container">
+<h1 id="question"></h1>
+
+<img id="teddy" src="chiikawa-hachiware-01.png">
+
+<br>
+
+<button class="yes" onclick="sayYes()">YES 💚</button>
+<button class="no" id="noBtn" onclick="sayNo()">NO ❤️</button>
+</div>
+
+<div class="ring-popup" id="ringPopup">
+<h2>💍 She Said YES! 💍</h2>
+<p>Hafizul ❤️ Shehnaz</p>
+<p>November Wedding 2026 👑💎</p>
+<img src="chiikawa-hachiware-09.png" width="150">
+</div>
+
+<script>
+
+/* Messages */
+const messages = [
+"Shehnaz ❤️ Will you be my Valentine?",
+"Are you positive? 🤔",
+"Pookie please…. 😢",
+"If you say no, I will be really sad 💔",
+"I will be very very very sad….. 😭",
+"Pleaseeeee....???? 🥺",
+"Don't do this to meeee….. 😞",
+"Last Chance 😭"
+];
+
+/* Teddy Images */
+const images = [
+"chiikawa-hachiware-01.png",
+"chiikawa-hachiware-02.png",
+"chiikawa-hachiware-03.png",
+"chiikawa-hachiware-04.png",
+"chiikawa-hachiware-05.png",
+"chiikawa-hachiware-06.png",
+"chiikawa-hachiware-07.png",
+"chiikawa-hachiware-08.png"
+];
+
+let step = 0;
+
+const question = document.getElementById("question");
+const teddy = document.getElementById("teddy");
+const noBtn = document.getElementById("noBtn");
+
+/* Music Setup */
+const bgMusic = new Audio("Future.mp3");
+const yesMusic = new Audio("Song.mp3");
+
+bgMusic.loop = true;
+bgMusic.volume = 0.6;
+yesMusic.volume = 0;
+
+/* Start background music after first click (browser policy) */
+document.body.addEventListener("click", function startMusicOnce(){
+bgMusic.play();
+document.body.removeEventListener("click", startMusicOnce);
+});
+
+/* Typing Effect */
+function typeText(text,i=0){
+if(i<text.length){
+question.innerHTML += text.charAt(i);
+setTimeout(()=>typeText(text,i+1),50);
+}
+}
+
+function loadStep(){
+question.innerHTML="";
+typeText(messages[step]);
+teddy.src = images[step];
+}
+
+loadStep();
+
+/* Fade Functions */
+function fadeOut(audio, duration){
+let stepTime = 50;
+let steps = duration / stepTime;
+let volumeStep = audio.volume / steps;
+
+let fade = setInterval(function(){
+if(audio.volume - volumeStep > 0){
+audio.volume -= volumeStep;
+}else{
+audio.volume = 0;
+audio.pause();
+clearInterval(fade);
+}
+}, stepTime);
+}
+
+function fadeIn(audio, targetVolume, duration){
+let stepTime = 50;
+let steps = duration / stepTime;
+let volumeStep = targetVolume / steps;
+
+audio.play();
+
+let fade = setInterval(function(){
+if(audio.volume + volumeStep < targetVolume){
+audio.volume += volumeStep;
+}else{
+audio.volume = targetVolume;
+clearInterval(fade);
+}
+}, stepTime);
+}
+
+/* YES Button (Works Anytime) */
+function sayYes(){
+
+fadeOut(bgMusic,2000);
+
+setTimeout(function(){
+
+document.getElementById("fireworks").style.display="block";
+document.getElementById("ringPopup").style.display="block";
+
+fadeIn(yesMusic,0.8,3000);
+
+},1500);
+}
+
+/* NO Button Logic */
+function sayNo(){
+step++;
+
+if(step < messages.length){
+loadStep();
+}
+
+/* Escape on last step */
+if(step === messages.length-1){
+noBtn.onmouseover = function(){
+this.style.position="absolute";
+this.style.top=Math.random()*80+"%";
+this.style.left=Math.random()*80+"%";
+}
+}
+}
+
+/* Falling Hearts Generator */
+setInterval(()=>{
+const heart=document.createElement("div");
+heart.className="heart";
+heart.style.left=Math.random()*100+"%";
+heart.innerHTML="❤️";
+document.body.appendChild(heart);
+setTimeout(()=>heart.remove(),5000);
+},300);
+
+</script>
+
+</body>
+</html>
